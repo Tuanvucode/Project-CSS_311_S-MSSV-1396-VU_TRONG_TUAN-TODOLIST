@@ -23,16 +23,16 @@ public class TaskDAO {
                         rs.getString("title"),
                         rs.getString("description"),
                         rs.getString("deadline"),
-                        rs.getString("status")
+                        rs.getString("status")                   
                 );
                 list.add(task);
-            }
+            }          
         } catch (SQLException e) {
             e.printStackTrace();
-        }
+        }     
         return list;
     }
-
+    
     public boolean addTask(Task task) {
         String sql = "INSERT INTO tasks (title, description, deadline, status) VALUES (?, ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
@@ -75,4 +75,21 @@ public class TaskDAO {
             return false;
         }
     }
+    
+    public boolean updateTaskStatus(int taskId, String status) {
+    String sql = "UPDATE tasks SET status = ? WHERE id = ?";
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        
+        pstmt.setString(1, status);
+        pstmt.setInt(2, taskId);
+        
+        int affectedRows = pstmt.executeUpdate();
+        return affectedRows > 0;
+        
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return false;
+    }
+}
 }
